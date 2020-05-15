@@ -1,0 +1,71 @@
+.App {
+  flex: 1;
+  justify-content: center;
+}
+label {
+  font-weight: bold;
+}
+input[type='text'],input[type='password'],input[type='file'],textarea,select{
+  display:  block;
+  width:  250px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: #555;
+  background-color: bisque;  
+  border-radius: 5px;
+}
+
+.flex-container{
+  width: 80%;
+  margin: 0 auto;
+  display: -webkit-flex; /* Safari */     
+  display: flex; /* Standard syntax */
+  opacity: .85 ;
+  
+}
+.flex-container .column{
+  padding: 10px;
+  background: rgb(143, 149, 155);
+  -webkit-flex: 1; /* Safari */
+  -ms-flex: 1; /* IE 10 */
+  /* Standard syntax */
+}
+.flex-container .bg-alt{
+  background: #d6fad6;
+  height:550px;
+  overflow-y: scroll; 
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  width:100% 
+}
+
+.signIn{
+  display:flex;
+  justify-content: center;    
+}
+.bgImage{
+  background-image: url(./veg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover; 
+  height: 700px;
+}
+
+.signIn form{
+  border-color: rgb(210, 30, 30);
+  border-width: 12px;
+  background-color: rgb(19, 129, 120);
+  padding:15px;
+  border-radius: 10px;
+  height: 200px;
+  margin-top: 250px;
+}
+
+.signUp{
+  padding:10px;
+  color: #ff00aa;
+  font-weight: bold;
+}
