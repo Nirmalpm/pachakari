@@ -16,7 +16,7 @@ const store = createStore(Reducers,applyMiddleware(Thunk));
 store.subscribe(throttle(()=> {
   saveState({
      signin: store.getState().signin
-  });
+  },'state');
 },1000));
 
 

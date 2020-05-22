@@ -1,17 +1,9 @@
 import React from 'react';
-import {Formik, Field, Form, ErrorMessage, getIn} from 'formik';
+import {Formik, Field, Form, ErrorMessage} from 'formik';
 import NumberFormat from 'react-number-format';
 import _isObject from 'lodash/isObject';
+import {getStyles} from '../utils/StyleUtil';
 
-
-
-function getStyles(errors,touched, formName){
-    if(getIn(errors,formName) && getIn(touched,formName)){
-        return {
-            border:'1px solid red'
-        }
-    }
-}
 
 const Input = ({ field, form }) => (
     <input
@@ -86,11 +78,12 @@ class ItemForm extends React.Component{
                 setSubmitting(true);
                 this.props.onSubmit(values,resetForm,setSubmitting);
             }}
-            onReset={(values,{ setSubmitting, setFieldValue})=>{
-                //alert(JSON.stringify(values));
-                this.setState({key:new Date().toString()});
+            onReset={(values,{setSubmitting})=>{
+                alert(JSON.stringify(values));
                 setSubmitting(false);
+                //this.props.onSubmit(values,resetForm,setSubmitting);
             }}
+            
             > 
             { ({values,errors,touched,handleChange,handleBlur,
             isSubmitting,handleSubmit,handleReset,dirty}) =>{
@@ -99,10 +92,10 @@ class ItemForm extends React.Component{
                 }
                // console.log(values)
                 return(
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={()=>handleSubmit()}>
                         <label htmlFor="itemName">Name</label><br/>
                         <Field  name="itemName" component="input" type="text" 
-                        style={getStyles(errors,touched, 'itemName')}/>
+                        className={getStyles(errors,touched, 'itemName')}/>
                         <ErrorMessage name="itemName"/><br/>
 
                         <label htmlFor="itemDescription">Description</label><br/>
@@ -150,7 +143,7 @@ class ItemForm extends React.Component{
                         }
                         
                         <button className="button ui primary" 
-                        type="reset" onClick={handleReset} disabled={!dirty }> Reset</button>
+                        onClick={(event) =>handleReset()} disabled={!dirty }> Reset</button>
                     </Form>
                 );
             }}

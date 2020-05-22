@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
 import {Formik, Form} from 'formik';
 import {connect} from 'react-redux';
-import {login, logout} from '../actions';
+import {login, logout} from '../actions/signin';
+import {NavLink} from 'react-router-dom';
 
 const initialValues ={userName:'',password:''}
 
@@ -24,7 +25,6 @@ class LoginForm extends Component{
                     {(formProps) =>{
                         return(
                         <div className="signIn bgImage">
-                        <div><button onClick={this.logout}>Logout</button></div>
                         <Form onSubmit={formProps.handleSubmit}>
                             <label htmlFor="userName">UserName</label>
                             <input name="userName" 
@@ -41,8 +41,9 @@ class LoginForm extends Component{
                             onBlur={formProps.handleBlur}/>
                             <br/>
                             <button type="submit">Sign In</button>
-                            <a className="signUp" href="/signup">Sign Up?</a>                            
+                            <NavLink className="signUp-text" to="/signup">Sign Up?</NavLink>                            
                         </Form>
+                        
                         </div>    
                         )
                     }}
@@ -54,7 +55,7 @@ class LoginForm extends Component{
 } 
 
 const mapStateToProps = (state) =>{
-    console.log(state);
+    //console.log(state);
     return state.signin;
 }
 

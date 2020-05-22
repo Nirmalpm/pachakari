@@ -4,6 +4,7 @@ import {addItem, getItems} from '../actions';
 import Item from './Item';
 import ItemForm from './ItemForm';
 import ItemFilter from './ItemFilter';
+import ShoppingCart from './ShoppingCart';
 import _ from 'lodash';
 
 
@@ -11,17 +12,27 @@ import _ from 'lodash';
 class ItemList extends React.Component{
     state={
         items:[],
-        selectedItem:null
+        selectedItem:null,
+        isFilter: false,
+        user: null
     };
+
+    isAuthorized = (permission) =>{
+        return this.state.user ? _.includes(this.state.user.role,permission): false
+    }
     
-    onSubmit = (item,resetForm,setSubmitting) =>{
-       // console.log(item)
-        this.props.addItem(item,resetForm,setSubmitting);
-        this.props.getItems();
+    onSubmit = (item,resetForm,setSubmitting,isModified) =>{
+        //console.log(item)
+        this.setState({selectedItem:null,isFilter:false,items:[]})
+        this.props.addItem(item,resetForm,setSubmitting,this.state.user.user,isModified);
+        //resetForm();
+        
+        //this.props.getItems();
     };
-    onEdit = (item) =>{
+    onEdit = (event,item) =>{
+        event.preventDefault();
         this.setState({selectedItem:item})
-        console.log(item)
+        //console.log(item)
         if(item.itemUnit == null){
             item.itemUnit = "";
         }
@@ -32,18 +43,23 @@ class ItemList extends React.Component{
         if(this.state.items){
             return this.state.items.map((item)=>{
                 return (
-                    <Item key={item.itemId} item={item} onEdit={this.onEdit}/>             
+                    <Item key={item.itemId} item={item} 
+                    onEdit={this.onEdit} 
+                    isEditable={this.isAuthorized('ROLE_EDIT')} 
+                    isBuyable={this.isAuthorized('ROLE_BUY')}
+                    user={this.state.user.user}
+                    />             
                 );
             });
         }        
     }
 
     onFilterItem = (items) =>{
-        this.setState({items:items});
+        this.setState({items:items,isFilter:true});
     }
 
     render(){
-        console.log(this.state.selectedItem)
+        //console.log(this.state.selectedItem)
         const defaultValues=this.state.selectedItem ? {...this.state.selectedItem,edit:true} :{
             itemDescription:'',
             itemName:'',
@@ -53,15 +69,25 @@ class ItemList extends React.Component{
             edit:false        
         }
         //console.log(defaultValues)
+        
+        const className = this.isAuthorized('ROLE_EDIT')? "flex-container" : "flex-container flex-container-buy-only-width";
         return(
             <div>
                 <div className="center"> 
                     <ItemFilter items={this.props.items} filterItem={this.onFilterItem}/>
                 </div><br/>
-                <div className="flex-container">                
-                    <div className="column">
-                        <ItemForm onSubmit={this.onSubmit} defaultValues={defaultValues}/>   </div>
-                <   div className="column bg-alt">{this.renderItems()}</div>
+                <div className="container">
+                    <div className={className}>                
+                        {this.isAuthorized('ROLE_EDIT')?
+                        <div className="column">
+                            <label>Create Item</label><br/><br/> 
+                        <ItemForm onSubmit={this.onSubmit} defaultValues={defaultValues} /> 
+                        </div>: null
+                        }    
+                        <div className="column bg-alt">{this.renderItems()}</div>
+                        
+                    </div>
+                    <ShoppingCart user={this.state.user}/> 
                 </div>
             </div>
             
@@ -72,6 +98,7 @@ class ItemList extends React.Component{
         //console.log('inside shouldComponentUpdate')
         //console.log(this.props.items,nextProps.items)
         //console.log(this.state.items,nextState.items)
+        //console.log(this.props,this.state)
         const st = !_.isEqual(this.props.items,nextProps.items)
         const pr = !_.isEqual(this.state.items,nextState.items)
         const it = !_.isEqual(this.state.selectedItem,nextState.selectedItem)
@@ -82,13 +109,15 @@ class ItemList extends React.Component{
     componentDidUpdate (){
         //console.log('inside componentDidUpdate')
         //console.log(this.props.items)
-        this.setState({items:this.props.items});
-    }1          
+        if(!this.state.isFilter){
+            this.setState({items:this.props.items,user:this.props.user});
+        }
+    }      
 }
 
 const mapStateToProps = (state) =>{
     //console.log('inside mapStateToProps')
-    return state.item;
+    return {items:state.item.items,user:state.signin};
 }
 
 export default connect(mapStateToProps,{addItem,getItems})(ItemList);

@@ -1,11 +1,18 @@
 import axios from 'axios';
 
-export const axiosResource = () => {
+export const axiosResourceHeader = () => {
+    return {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}
+  }
+
+export const axiosAuthRegister =  () => axios.create({
+        baseURL:'http://localhost:8080',
+    });   
+
+
+export const axiosResource = (header) => {
     return axios.create({
         baseURL:'http://localhost:9010',
-        headers:{
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-        }
+        headers: header
     });
 }  
 
@@ -20,6 +27,5 @@ export const axiosAuth =  () =>{
             'Authorization': `Basic ${authHeader}`,
             'Content-Type': 'application/x-www-form-urlencoded'
         }
-    });
-      
+    });      
 } 

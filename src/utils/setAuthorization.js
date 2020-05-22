@@ -12,24 +12,24 @@ export const setAuth =  (token, refresh_token)=>{
     }
 };
 
-export const refreshAuthCallDispatch = async (dispatch, resourceUrl, dispatchAction) =>{
+export const refreshAuthCallDispatch = async (dispatch, resourceUrl, dispatchAction,axiosHeader) =>{
     const refresh_token = localStorage.getItem('jwtRefreshToken');
     const response = await axiosAuth().post(`/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`);
-    console.log(1,refresh_token);
-    console.log(11,localStorage.getItem('jwtToken'));
+    //console.log(1,refresh_token);
+    //console.log(11,localStorage.getItem('jwtToken'));
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('jwtRefreshToken');
-    console.log(111,localStorage.getItem('jwtToken'));
-    console.log(2,response.data);
+    //console.log(111,localStorage.getItem('jwtToken'));
+    //console.log(2,response.data);
     if(response.data.access_token){
         setAuth(response.data.access_token,response.data.refresh_token);
     }else{
         setAuth({},{})
         return;
     }   
-    console.log(3,resourceUrl);
-    console.log(4,localStorage.getItem('jwtToken'));
-    const response1 = await axiosResource.get(resourceUrl);
+    //console.log(3,resourceUrl);
+    //console.log(4,localStorage.getItem('jwtToken'));
+    const response1 = await axiosResource(axiosHeader).get(resourceUrl);
     dispatch({type:dispatchAction,payload:response1.data});
 };
 
